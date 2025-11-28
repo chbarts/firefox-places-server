@@ -74,7 +74,7 @@ queryByAdded = '''SELECT i.id,title,url,dateAdded,lastModified
           FROM moz_places p
           JOIN moz_bookmarks b
           WHERE p.id = b.fk) i
-    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL'''
+    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL ORDER BY dateAdded ASC'''
 
 
 queryByTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
@@ -84,7 +84,7 @@ queryByTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
           FROM moz_places p
           JOIN moz_bookmarks b
           WHERE b.parent = :tagid AND p.id = b.fk) i
-    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL'''
+    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL ORDER BY dateAdded ASC'''
 
 
 queryByTitleRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
@@ -94,7 +94,7 @@ queryByTitleRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
           FROM moz_places p
           JOIN moz_bookmarks b
           WHERE p.id = b.fk) i
-    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.title REGEXP :regex)'''
+    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.title REGEXP :regex) ORDER BY dateAdded ASC'''
 
 
 queryByUrlRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
@@ -104,7 +104,7 @@ queryByUrlRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
           FROM moz_places p
           JOIN moz_bookmarks b
           WHERE p.id = b.fk) i
-    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.url REGEXP :regex)'''
+    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.url REGEXP :regex) ORDER BY dateAdded ASC'''
 
 
 queryByTitleAndUrlRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
@@ -114,7 +114,7 @@ queryByTitleAndUrlRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModifie
           FROM moz_places p
           JOIN moz_bookmarks b
           WHERE p.id = b.fk) i
-    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.title REGEXP :tregex) AND (b.url REGEXP :uregex)'''
+    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.title REGEXP :tregex) AND (b.url REGEXP :uregex) ORDER BY dateAdded ASC'''
 
 
 queryByTitleRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
@@ -124,7 +124,7 @@ queryByTitleRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModifie
           FROM moz_places p
           JOIN moz_bookmarks b
           WHERE b.parent = :tagid AND p.id = b.fk) i
-    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.title REGEXP :regex)'''
+    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.title REGEXP :regex) ORDER BY dateAdded ASC'''
 
 
 queryByUrlRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
@@ -134,7 +134,7 @@ queryByUrlRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
           FROM moz_places p
           JOIN moz_bookmarks b
           WHERE b.parent = :tagid AND p.id = b.fk) i
-    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.url REGEXP :regex)'''
+    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.url REGEXP :regex) ORDER BY dateAdded ASC'''
 
 
 queryByTitleAndUrlRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
@@ -144,7 +144,7 @@ queryByTitleAndUrlRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastM
           FROM moz_places p
           JOIN moz_bookmarks b
           WHERE b.parent = :tagid AND p.id = b.fk) i
-    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.title REGEXP :tregex) AND (b.url REGEXP :uregex)'''
+    WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (b.title REGEXP :tregex) AND (b.url REGEXP :uregex) ORDER BY dateAdded ASC'''
 
 
 queryTagsByBookmark = '''SELECT id,title
