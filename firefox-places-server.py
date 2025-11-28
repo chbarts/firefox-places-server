@@ -303,7 +303,7 @@ def make_response(path, db_file, dbmin, dbmax):
             if tags:
                 resline += " ("
                 for tag in tags:
-                    resline += "<a href=\"/?lo={}&hi={}&tag={}\">{}</a> ".format(dbmin, dbmax, tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
+                    resline += "<a href=\"/?min={}&max={}&tag={}\">{}</a> ".format(dbmin, dbmax, tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
                 resline += ")"
             res += "<li>{}</li>\n".format(resline)
         res += "</ol>"
