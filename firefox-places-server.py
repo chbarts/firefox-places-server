@@ -260,7 +260,7 @@ def get_dates(db):
     cursor = db.cursor()
     cursor.execute("SELECT MIN(dateAdded), MAX(dateAdded) FROM moz_bookmarks")
     res = cursor.fetchone()
-    return [time.strftime("%Y-%m-%dT%H:%M:%S", make_date(res[0])), time.strftime("%Y-%m-%dT%H:%M:%S", make_date(res[1]))]
+    return [time.strftime("%Y-%m-%dT%H:%M:%S", make_date(int(res[0]) - 1000000)), time.strftime("%Y-%m-%dT%H:%M:%S", make_date(int(res[1]) + 1000000))]
 
 
 def make_response(path, db_file, dbmin, dbmax):
