@@ -1,0 +1,33 @@
+db = sqlite3.connect('file:{}?immutable=1'.format(path))
+
+All tags: SELECT * FROM moz_bookmarks WHERE parent = 4
+
+All bookmarks related to tag: SELECT * FROM moz_places p JOIN moz_bookmarks b WHERE b.parent = TAG_ID AND p.id = b.fk
+TAG_ID is the id of the row in the bookmarks table with the title equal to the actual value of the tag:
+
+Title of bookmark: SELECT title FROM moz_bookmarks WHERE fk = PLACE_ID
+
+INSERT INTO moz_bookmarks VALUES(29945,2,NULL,4,69,'high weirdness',NULL,NULL,1660531572000000,1761612633014000,'dDGdZHeSp4C-',0,10);
+INSERT INTO moz_bookmarks VALUES(29946,1,787,29945,0,NULL,NULL,NULL,1660531572000000,1660531572000000,'wbLUbCS0m4Zc',0,1);
+INSERT INTO moz_places VALUES(787,'http://boards.straightdope.com/sdmb/showthread.php?t=97714',NULL,'moc.epodthgiarts.sdraob.',0,0,0,14,NULL,'eqKwS5YkaIYJ',5,125509421350616,NULL,NULL,NULL,49,0,NULL,0);
+INSERT INTO moz_bookmarks VALUES(902,1,787,2,875,'The Great Phi Theory. - Straight Dope Message Board',NULL,NULL,1334365180993000,1660531572000000,'0Z2SoDiCwQF5',2,0);
+
+Get all bookmarks related to a given tag, by tag id:
+
+SELECT title,url,dateAdded,lastModified
+    FROM moz_bookmarks b
+    JOIN
+      (SELECT p.id, p.url
+          FROM moz_places p
+          JOIN moz_bookmarks b
+          WHERE b.parent = 29945 AND p.id = b.fk) i
+    WHERE i.id = b.fk AND title NOT NULL;
+
+
+Get all tags related to a given bookmark, by moz_places id:
+
+SELECT title
+    FROM moz_bookmarks b
+    JOIN
+      (SELECT parent FROM moz_bookmarks WHERE fk = 787) i
+    WHERE b.parent = 4 AND b.id = i.parent
