@@ -260,7 +260,7 @@ def make_response(path, db_file, dbmin, dbmax):
     if "max" in path:
         title_re = ""
         url_re = ""
-        tag = ""
+        ttag = ""
         con = sqlite3.connect("file:{}?immutable=1".format(db_file))
         con.create_function("REGEXP", 2, regex)
         pquery = parse_query(path)
@@ -271,10 +271,10 @@ def make_response(path, db_file, dbmin, dbmax):
         if 'url' in pquery and len(pquery['url'][0]) > 0:
             url_re = pquery['url'][0]
         if 'tag' in pquery and len(pquery['tag'][0]) > 0:
-            tag = pquery['tag'][0]
+            ttag = pquery['tag'][0]
         res = "<ol>\n"
         val = []
-        if len(tag) == 0:
+        if len(ttag) == 0:
             if len(title_re) > 0 and len(url_re) > 0:
                 val = get_bookmarks_by_title_and_url_regex_and_added(con, title_re, url_re, lo, hi)
             elif len(title_re) > 0 and not len(url_re) > 0:
@@ -284,7 +284,7 @@ def make_response(path, db_file, dbmin, dbmax):
             else:
                 val = get_bookmarks_by_added(con, lo, hi)
         else:
-            tagid = get_tagid(con, tag)
+            tagid = get_tagid(con, ttag)
             if len(title_re) > 0 and len(url_re) > 0:
                 val = get_bookmarks_by_title_and_url_regex_and_tag_and_added(con, title_re, url_re, lo, hi, tagid)
             elif len(title_re) > 0 and not len(url_re) > 0:
@@ -305,11 +305,10 @@ def make_response(path, db_file, dbmin, dbmax):
                 for tag in tags:
                     resline += "<a href=\"/?lo={}&hi={}&tag={}\">{}</a> ".format(dbmin, dbmax, tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
                 resline += ")"
-            print(resline)
             res += "<li>{}</li>\n".format(resline)
         res += "</ol>"
         con.close()
-        return base.format(res=res, mindef=pquery['min'][0], maxdef=pquery['max'][0], treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(tag))
+        return base.format(res=res, mindef=pquery['min'][0], maxdef=pquery['max'][0], treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(ttag))
     else:
         return base.format(res="", mindef=dbmin, maxdef=dbmax, treg="", ureg="", tag="")
 
