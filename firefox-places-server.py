@@ -163,7 +163,7 @@ def parse_query(path):
 def parse_date(stamp):
     dt = datetime.fromisoformat(stamp)
     dt = dt.astimezone(tz=None)
-    return int(dt.timestamp())
+    return int(dt.timestamp()) * 1000000
 
 
 def make_date(stamp):
@@ -292,25 +292,25 @@ def make_response(path, db_file, dbmin, dbmax):
             elif not len(title_re) > 0 and len(url_re) > 0:
                 val = get_bookmarks_by_url_regex_and_tag_and_added(con, url_re, lo, hi, tagid)
             else:
-                val = get_bookmarks_by_tag_added(con, lo, hi, tagid)
+                val = get_bookmarks_by_tag_and_added(con, lo, hi, tagid)
         for row in val:
             tags = find_tags(con, row['id'])
             title = html.escape(row['title'])
             url = row['url'].replace('"', '%22')
             added = time.strftime("%A, %B %d, %Y %T %z", row['added'])
             modified = time.strftime("%A, %B %d, %Y %T %z", row['modified'])
-            link = "{} ({}) &mdash; <a href=\"{}\">{}</a>".format(added, modified, url, title)
+            resline = "{} ({}) &mdash; <a href=\"{}\">{}</a>".format(added, modified, url, title)
             if tags:
-                link += " ("
+                resline += " ("
                 for tag in tags:
-                    link += "<a href=\"/?hi={}&lo={}&tag={}\">{}</a> ".format(lo, hi, tag['id'], html.escape(tag['tag']))
-                link += ")"
-            res += "<li>{}</li>\n".format(link)
+                    resline += "<a href=\"/?hi={}&lo={}&tag={}\">{}</a> ".format(lo, hi, tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
+                resline += ")"
+            res += "<li>{}</li>\n".format(resline)
         res += "</ol>"
         con.close()
         return base.format(res=res, mindef=pquery['min'][0], maxdef=pquery['max'][0], treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(tag))
     else:
-        return base.format(res="", mindef=dbmin, maxdef=dbmax, treg="", ureg="")
+        return base.format(res="", mindef=dbmin, maxdef=dbmax, treg="", ureg="", tag="")
 
 
 class HTTPHandler(BaseHTTPRequestHandler):
