@@ -256,6 +256,13 @@ def get_bookmarks_by_title_and_url_regex_and_tag_and_added(db, tregex, uregex, t
     return res
 
 
+def get_dates(db):
+    cursor = db.cursor()
+    cursor.execute("SELECT MIN(dateAdded), MAX(dateAdded) FROM moz_bookmarks")
+    res = cursor.fetchone()
+    return [time.strftime("%Y-%m-%dT%H:%M:%S", make_date(res[0])), time.strftime("%Y-%m-%dT%H:%M:%S", make_date(res[1]))]
+
+
 def make_response(path, db_file, dbmin, dbmax):
     if "max" in path:
         title_re = ""
@@ -301,16 +308,20 @@ def make_response(path, db_file, dbmin, dbmax):
             modified = time.strftime("%A, %B %d, %Y %T %z", row['modified'])
             resline = "{} ({}) &mdash; <a href=\"{}\">{}</a>".format(added, modified, url, title)
             if tags:
+                dates = get_dates(con)
                 resline += " ("
                 for tag in tags:
-                    resline += "<a href=\"/?min={}&max={}&tag={}\">{}</a> ".format(dbmin, dbmax, tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
+                    resline += "<a href=\"/?min={}&max={}&tag={}\">{}</a> ".format(dates[0], dates[1], tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
                 resline += ")"
             res += "<li>{}</li>\n".format(resline)
         res += "</ol>"
         con.close()
         return base.format(res=res, mindef=pquery['min'][0], maxdef=pquery['max'][0], treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(ttag))
     else:
-        return base.format(res="", mindef=dbmin, maxdef=dbmax, treg="", ureg="", tag="")
+        con = sqlite3.connect("file:{}?immutable=1".format(db_file))
+        dates = get_dates(con)
+        con.close()
+        return base.format(res="", mindef=dates[0], maxdef=dates[1], treg="", ureg="", tag="")
 
 
 class HTTPHandler(BaseHTTPRequestHandler):
@@ -338,12 +349,8 @@ if len(sys.argv) == 1:
 
 db_file = os.path.abspath(sys.argv[1])
 con = sqlite3.connect("file:{}?immutable=1".format(db_file))
-cur = con.cursor()
-cur.execute("SELECT MIN(dateAdded), MAX(dateAdded) FROM moz_bookmarks")
-res = cur.fetchone()
+res = get_dates(con)
 con.close()
-min = time.strftime("%Y-%m-%dT%H:%M:%S", make_date(res[0]))
-max = time.strftime("%Y-%m-%dT%H:%M:%S", make_date(res[1]))
-handler = partial(HTTPHandler, db_file, min, max)
+handler = partial(HTTPHandler, db_file, res[0], res[1])
 httpd = HTTPServer(("", 8090), RequestHandlerClass=handler)
 httpd.serve_forever()
