@@ -67,7 +67,7 @@ queryByTag = '''SELECT i.id,title,url,dateAdded,lastModified
 queryTagId = "SELECT id FROM moz_bookmarks WHERE parent = 4 AND title = :tag"
 
 
-queryByAdded = '''SELECT i.id,title,url,dateAdded,lastModified
+queryByAdded = '''SELECT DISTINCT i.id,title,url,dateAdded,lastModified
     FROM moz_bookmarks b
     JOIN
       (SELECT p.id, p.url
@@ -77,7 +77,7 @@ queryByAdded = '''SELECT i.id,title,url,dateAdded,lastModified
     WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL ORDER BY dateAdded ASC'''
 
 
-queryByTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
+queryByTagAndAdded = '''SELECT DISTINCT i.id,title,url,dateAdded,lastModified
     FROM moz_bookmarks b
     JOIN
       (SELECT p.id, p.url
@@ -87,7 +87,7 @@ queryByTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
     WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL ORDER BY dateAdded ASC'''
 
 
-queryByTitleRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
+queryByTitleRegexAndAdded = '''SELECT DISTINCT i.id,title,url,dateAdded,lastModified
     FROM moz_bookmarks b
     JOIN
       (SELECT p.id, p.url
@@ -97,7 +97,7 @@ queryByTitleRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
     WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (title REGEXP :regex) ORDER BY dateAdded ASC'''
 
 
-queryByUrlRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
+queryByUrlRegexAndAdded = '''SELECT DISTINCT i.id,title,url,dateAdded,lastModified
     FROM moz_bookmarks b
     JOIN
       (SELECT p.id, p.url
@@ -107,7 +107,7 @@ queryByUrlRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
     WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (url REGEXP :regex) ORDER BY dateAdded ASC'''
 
 
-queryByTitleAndUrlRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
+queryByTitleAndUrlRegexAndAdded = '''SELECT DISTINCT i.id,title,url,dateAdded,lastModified
     FROM moz_bookmarks b
     JOIN
       (SELECT p.id, p.url
@@ -117,7 +117,7 @@ queryByTitleAndUrlRegexAndAdded = '''SELECT i.id,title,url,dateAdded,lastModifie
     WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (title REGEXP :tregex) AND (url REGEXP :uregex) ORDER BY dateAdded ASC'''
 
 
-queryByTitleRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
+queryByTitleRegexAndTagAndAdded = '''SELECT DISTINCT i.id,title,url,dateAdded,lastModified
     FROM moz_bookmarks b
     JOIN
       (SELECT p.id, p.url
@@ -127,7 +127,7 @@ queryByTitleRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModifie
     WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (title REGEXP :regex) ORDER BY dateAdded ASC'''
 
 
-queryByUrlRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
+queryByUrlRegexAndTagAndAdded = '''SELECT DISTINCT i.id,title,url,dateAdded,lastModified
     FROM moz_bookmarks b
     JOIN
       (SELECT p.id, p.url
@@ -137,7 +137,7 @@ queryByUrlRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
     WHERE i.id = b.fk AND (b.dateAdded BETWEEN :beg AND :end) AND title NOT NULL AND (url REGEXP :regex) ORDER BY dateAdded ASC'''
 
 
-queryByTitleAndUrlRegexAndTagAndAdded = '''SELECT i.id,title,url,dateAdded,lastModified
+queryByTitleAndUrlRegexAndTagAndAdded = '''SELECT DISTINCT i.id,title,url,dateAdded,lastModified
     FROM moz_bookmarks b
     JOIN
       (SELECT p.id, p.url
