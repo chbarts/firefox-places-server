@@ -310,9 +310,9 @@ def make_response(path, db_file, dbmin, dbmax):
             if tags:
                 dates = get_dates(con)
                 resline += " ("
-                for tag in tags:
-                    resline += "<a href=\"/?min={}&max={}&tag={}\">{}</a> ".format(dates[0], dates[1], tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
-                resline += ")"
+                for tag in tags[:-1]:
+                    resline += "<a href=\"/?min={}&max={}&tag={}\">{}</a>, ".format(dates[0], dates[1], tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
+                resline += "<a href=\"/?min={}&max={}&tag={}\">{}</a>)".format(dates[0], dates[1], tags[-1]['tag'].replace(" ", "+"), html.escape(tags[-1]['tag']))
             res += "<li>{}</li>\n".format(resline)
         res += "</ol>"
         con.close()
