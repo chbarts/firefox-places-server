@@ -271,8 +271,13 @@ def make_response(path, db_file, dbmin, dbmax):
         con = sqlite3.connect("file:{}?immutable=1".format(db_file))
         con.create_function("REGEXP", 2, regex)
         pquery = parse_query(path)
-        lo = parse_date(pquery['min'][0])
-        hi = parse_date(pquery['max'][0])
+        dates = get_dates(con)
+        lo = dates[0]
+        hi = dates[1]
+        if 'min' in pquery and len(pquery['min'][0]) > 0:
+            lo = parse_date(pquery['min'][0])
+        if 'max' in pquery and len(pquery['max'][0]) > 0:
+            hi = parse_date(pquery['max'][0])
         if 'title' in pquery and len(pquery['title'][0]) > 0:
             title_re = pquery['title'][0]
         if 'url' in pquery and len(pquery['url'][0]) > 0:
@@ -312,8 +317,8 @@ def make_response(path, db_file, dbmin, dbmax):
                 resline += " ("
                 if len(tags) > 1:
                     for tag in tags[:-1]:
-                        resline += "<a href=\"/?min={}&max={}&tag={}\">{}</a>, ".format(dates[0], dates[1], tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
-                resline += "<a href=\"/?min={}&max={}&tag={}\">{}</a>)".format(dates[0], dates[1], tags[-1]['tag'].replace(" ", "+"), html.escape(tags[-1]['tag']))
+                        resline += "<a href=\"/?tag={}\">{}</a>, ".format(tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
+                resline += "<a href=\"/?tag={}\">{}</a>)".format(tags[-1]['tag'].replace(" ", "+"), html.escape(tags[-1]['tag']))
             res += "<li>{}</li>\n".format(resline)
         res += "</ol>"
         con.close()
