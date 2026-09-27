@@ -16,7 +16,7 @@ base = """<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8"><title>Firefox Places Server</title></head>
 <body>
-<form action="/" method="GET">
+<form action="/search" method="GET">
 
 <div>
 <label for="tag">Tag: </label>
@@ -264,7 +264,8 @@ def get_dates(db):
 
 
 def make_response(path, db_file, dbmin, dbmax):
-    if "max" in path:
+    print(path)
+    if "search" in path:
         title_re = ""
         url_re = ""
         ttag = ""
@@ -272,8 +273,9 @@ def make_response(path, db_file, dbmin, dbmax):
         con.create_function("REGEXP", 2, regex)
         pquery = parse_query(path)
         dates = get_dates(con)
-        lo = dates[0]
-        hi = dates[1]
+        print(dates)
+        lo = parse_date(dates[0])
+        hi = parse_date(dates[1])
         if 'min' in pquery and len(pquery['min'][0]) > 0:
             lo = parse_date(pquery['min'][0])
         if 'max' in pquery and len(pquery['max'][0]) > 0:
@@ -317,12 +319,12 @@ def make_response(path, db_file, dbmin, dbmax):
                 resline += " ("
                 if len(tags) > 1:
                     for tag in tags[:-1]:
-                        resline += "<a href=\"/?tag={}\">{}</a>, ".format(tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
-                resline += "<a href=\"/?tag={}\">{}</a>)".format(tags[-1]['tag'].replace(" ", "+"), html.escape(tags[-1]['tag']))
+                        resline += "<a href=\"/search?tag={}\">{}</a>, ".format(tag['tag'].replace(" ", "+"), html.escape(tag['tag']))
+                resline += "<a href=\"/search?tag={}\">{}</a>)".format(tags[-1]['tag'].replace(" ", "+"), html.escape(tags[-1]['tag']))
             res += "<li>{}</li>\n".format(resline)
         res += "</ol>"
         con.close()
-        return base.format(res=res, mindef=pquery['min'][0], maxdef=pquery['max'][0], treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(ttag))
+        return base.format(res=res, mindef=lo, maxdef=hi, treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(ttag))
     else:
         con = sqlite3.connect("file:{}?immutable=1".format(db_file))
         dates = get_dates(con)
