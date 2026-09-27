@@ -264,7 +264,6 @@ def get_dates(db):
 
 
 def make_response(path, db_file, dbmin, dbmax):
-    print(path)
     if "search" in path:
         title_re = ""
         url_re = ""
@@ -273,7 +272,6 @@ def make_response(path, db_file, dbmin, dbmax):
         con.create_function("REGEXP", 2, regex)
         pquery = parse_query(path)
         dates = get_dates(con)
-        print(dates)
         lo = parse_date(dates[0])
         hi = parse_date(dates[1])
         if 'min' in pquery and len(pquery['min'][0]) > 0:
