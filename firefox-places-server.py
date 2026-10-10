@@ -25,12 +25,12 @@ base = """<!DOCTYPE html>
 
 <div>
 <label for="min">Beginning date and time: </label>
-<input id="min" name="min" type="datetime-local" value="{mindef}" required step=1>
+<input id="min" name="min" type="datetime-local" value="{mindef}" step=1>
 </div>
 
 <div>
 <label for="max">Ending date and time: </label>
-<input id="max" name="max" type="datetime-local" value="{maxdef}" required step=1>
+<input id="max" name="max" type="datetime-local" value="{maxdef}" step=1>
 </div>
 
 <div>
@@ -322,7 +322,7 @@ def make_response(path, db_file, dbmin, dbmax):
             res += "<li>{}</li>\n".format(resline)
         res += "</ol>"
         con.close()
-        return base.format(res=res, mindef=lo, maxdef=hi, treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(ttag))
+        return base.format(res=res, mindef=dates[0], maxdef=dates[1], treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(ttag))
     else:
         con = sqlite3.connect("file:{}?immutable=1".format(db_file))
         dates = get_dates(con)
