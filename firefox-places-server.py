@@ -272,11 +272,15 @@ def make_response(path, db_file, dbmin, dbmax):
         con.create_function("REGEXP", 2, regex)
         pquery = parse_query(path)
         dates = get_dates(con)
+        tmin = dates[0]
+        tmax = dates[1]
         lo = parse_date(dates[0])
         hi = parse_date(dates[1])
         if 'min' in pquery and len(pquery['min'][0]) > 0:
+            tmin = pquery['min'][0]
             lo = parse_date(pquery['min'][0])
         if 'max' in pquery and len(pquery['max'][0]) > 0:
+            tmax = pquery['max'][0]
             hi = parse_date(pquery['max'][0])
         if 'title' in pquery and len(pquery['title'][0]) > 0:
             title_re = pquery['title'][0]
@@ -322,7 +326,7 @@ def make_response(path, db_file, dbmin, dbmax):
             res += "<li>{}</li>\n".format(resline)
         res += "</ol>"
         con.close()
-        return base.format(res=res, mindef=dates[0], maxdef=dates[1], treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(ttag))
+        return base.format(res=res, mindef=tmin, maxdef=tmax, treg=html.escape(title_re), ureg=html.escape(url_re), tag=html.escape(ttag))
     else:
         con = sqlite3.connect("file:{}?immutable=1".format(db_file))
         dates = get_dates(con)
