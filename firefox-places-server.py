@@ -49,6 +49,7 @@ base = """<!DOCTYPE html>
 
 </form>
 <p><a href="/">Reset all filters</a></p>
+<p><a href="/tags">Show all tags</a></p>
 {res}
 </body>
 """
@@ -65,6 +66,9 @@ queryByTag = '''SELECT i.id,title,url,dateAdded,lastModified
 
 
 queryTagId = "SELECT id FROM moz_bookmarks WHERE parent = 4 AND title = :tag"
+
+
+queryTags = "SELECT title FROM moz_bookmarks WHERE parent = 4 ORDER BY title"
 
 
 queryByAdded = '''SELECT DISTINCT i.id,title,url,dateAdded,lastModified
@@ -192,6 +196,14 @@ def get_tagid(db, tag):
     return None
 
 
+def get_all_tags(db):
+    cursor = db.cursor()
+    res = []
+    for row in cursor.execute(queryTags):
+        res += [row[0]]
+    return res
+
+
 def get_bookmarks_by_added(db, beg, end):
     res = []
     cursor = db.cursor()
@@ -264,6 +276,16 @@ def get_dates(db):
 
 
 def make_response(path, db_file, dbmin, dbmax):
+    if "/tags" == path:
+        con = sqlite3.connect("file:{}?immutable=1".format(db_file))
+        tlist = get_all_tags(con)
+        dates = get_dates(con)
+        con.close()
+        res = "<ul>\n"
+        for tag in tlist:
+            res += "<li><a href=\"/search?tag={}\">{}</a></li>\n".format(tag, tag)
+        res += "</ul>\n"
+        return base.format(res=res, mindef=dates[0], maxdef=dates[1], treg="", ureg="", tag="")
     if "search" in path:
         title_re = ""
         url_re = ""
